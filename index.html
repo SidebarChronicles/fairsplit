@@ -22,6 +22,22 @@
 
   <!-- Tally -->
   <script async src="https://tally.so/widgets/embed.js"></script>
+  <script>
+    function openWaitlist(formId, emoji) {
+      var utm = {};
+      try { utm = JSON.parse(sessionStorage.getItem('utm_data') || '{}'); } catch(e) {}
+      if (window.Tally) {
+        Tally.openPopup(formId, {
+          emoji: { text: emoji, animation: 'wave' },
+          hiddenFields: {
+            utm_source:   utm.utm_source   || '',
+            utm_medium:   utm.utm_medium   || '',
+            utm_campaign: utm.utm_campaign || ''
+          }
+        });
+      }
+    }
+  </script>
 
   <!-- UTM passthrough -->
   <script>
@@ -388,7 +404,7 @@
   <!-- NAV -->
   <nav>
     <a class="nav-logo" href="#">FairSplit</a>
-    <button class="nav-cta" data-tally-open="D4xOrq" data-tally-emoji-text="⚖️" data-tally-emoji-animation="wave">Join waitlist</button>
+    <button class="nav-cta" onclick="openWaitlist('D4xOrq', '⚖️')">Join waitlist</button>
   </nav>
 
   <!-- HERO -->
@@ -397,7 +413,7 @@
       <span class="hero-eyebrow">Free early access</span>
       <h1>Co-parenting expenses shouldn't cause arguments.</h1>
       <p class="hero-sub">Track shared costs, attach receipts, and export a clean audit record. No $288/yr court software required.</p>
-      <button class="hero-cta" data-tally-open="D4xOrq" data-tally-emoji-text="⚖️" data-tally-emoji-animation="wave">Get early access — it's free</button>
+      <button class="hero-cta" onclick="openWaitlist('D4xOrq', '⚖️')">Get early access — it's free</button>
       <p class="hero-caption">No credit card. No court login. Just a clear record.</p>
     </div>
   </section>
@@ -478,7 +494,7 @@
     <div class="container">
       <h2>Get ahead of the next dispute.</h2>
       <p>Join the waitlist. Free during early access. No court software subscription required.</p>
-      <button class="second-cta-btn" data-tally-open="D4xOrq" data-tally-emoji-text="⚖️" data-tally-emoji-animation="wave">Join the waitlist</button>
+      <button class="second-cta-btn" onclick="openWaitlist('D4xOrq', '⚖️')">Join the waitlist</button>
     </div>
   </section>
 

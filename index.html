@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FairSplit — Split fairly. Document clearly. No arguments.</title>
+  <meta name="description" content="Track shared co-parenting expenses, attach receipts, and export an audit-ready report. No $288/yr court software required." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tally -->
+  <script async src="https://tally.so/widgets/embed.js"></script>
+
+  <!-- UTM passthrough -->
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var utmData = {};
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+        if (params.get(k)) utmData[k] = params.get(k);
+      });
+      if (Object.keys(utmData).length) {
+        sessionStorage.setItem('utm_data', JSON.stringify(utmData));
+      }
+    })();
+  </script>
+
+  <style>
+    :root {
+      --blue: #1D4E89;
+      --blue-dark: #163a66;
+      --green: #27AE60;
+      --green-dark: #1e8a4a;
+      --cloud: #F7F9FC;
+      --cloud-dark: #E8EDF3;
+      --text: #1a1f2e;
+      --muted: #5a6375;
+
+      --font-heading: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+
+      --radius: 10px;
+      --max: 860px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cloud);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 1.0625rem;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      background: #fff;
+      border-bottom: 1px solid var(--cloud-dark);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 1.375rem;
+      color: var(--blue);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+
+    .nav-cta {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .nav-cta:hover { background: var(--green-dark); }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: var(--max); margin: 0 auto; }
+
+    /* ── HERO ── */
+    .hero {
+      background: #fff;
+      padding: 6rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--cloud-dark);
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--cloud-dark);
+      color: var(--blue);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      line-height: 1.15;
+      color: var(--text);
+      max-width: 680px;
+      margin: 0 auto 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-sub {
+      font-size: 1.125rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.65;
+    }
+
+    .hero-cta {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .hero-cta:hover { background: var(--green-dark); }
+
+    .hero-caption {
+      margin-top: 0.85rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── PROBLEM ── */
+    .problem {
+      background: var(--blue);
+      color: #fff;
+      padding: 5rem 2rem;
+    }
+
+    .problem .container { max-width: var(--max); margin: 0 auto; }
+
+    .problem h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.015em;
+    }
+
+    .problem-intro {
+      font-size: 1.0625rem;
+      opacity: 0.82;
+      margin-bottom: 2.75rem;
+      max-width: 560px;
+    }
+
+    .problem-quotes {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .problem-quotes { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .quote-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius);
+      padding: 1.375rem 1.25rem;
+    }
+
+    .quote-card p {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      opacity: 0.92;
+      font-style: italic;
+      margin-bottom: 0.85rem;
+    }
+
+    .quote-source {
+      font-size: 0.775rem;
+      opacity: 0.55;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── FEATURES ── */
+    .features { background: var(--cloud); }
+
+    .features h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      text-align: center;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.015em;
+    }
+
+    .features-sub {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .feature-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--cloud-dark);
+      border-radius: var(--radius);
+      padding: 1.75rem 1.5rem;
+    }
+
+    .feature-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.85rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      background: #fff;
+      border-top: 1px solid var(--cloud-dark);
+      border-bottom: 1px solid var(--cloud-dark);
+    }
+
+    .how h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      text-align: center;
+      margin-bottom: 3rem;
+      letter-spacing: -0.015em;
+    }
+
+    .steps {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .steps { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 0.5rem;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .step h3 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── SECOND CTA ── */
+    .second-cta {
+      background: var(--blue);
+      text-align: center;
+      padding: 5rem 2rem;
+      color: #fff;
+    }
+
+    .second-cta h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      margin-bottom: 1rem;
+      letter-spacing: -0.015em;
+    }
+
+    .second-cta p {
+      font-size: 1.0625rem;
+      opacity: 0.82;
+      max-width: 500px;
+      margin: 0 auto 2.25rem;
+    }
+
+    .second-cta-btn {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .second-cta-btn:hover { background: var(--green-dark); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--cloud-dark);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">FairSplit</a>
+    <button class="nav-cta" data-tally-open="D4xOrq" data-tally-emoji-text="⚖️" data-tally-emoji-animation="wave">Join waitlist</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-eyebrow">Free early access</span>
+      <h1>Co-parenting expenses shouldn't cause arguments.</h1>
+      <p class="hero-sub">Track shared costs, attach receipts, and export a clean audit record. No $288/yr court software required.</p>
+      <button class="hero-cta" data-tally-open="D4xOrq" data-tally-emoji-text="⚖️" data-tally-emoji-animation="wave">Get early access — it's free</button>
+      <p class="hero-caption">No credit card. No court login. Just a clear record.</p>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="container">
+      <h2>Sound familiar?</h2>
+      <p class="problem-intro">Thousands of co-parents are running shared finances through Venmo notes and screenshots. It works until it doesn't.</p>
+      <div class="problem-quotes">
+        <div class="quote-card">
+          <p>"He reimbursed me $200 but I can't prove the original $600 was for school supplies and not something else. Venmo history is useless in mediation."</p>
+          <span class="quote-source">r/Divorce</span>
+        </div>
+        <div class="quote-card">
+          <p>"OurFamilyWizard is $144 per parent per year. I'm already paying child support. There has to be a cheaper way to keep records she can't dispute."</p>
+          <span class="quote-source">r/SingleParents</span>
+        </div>
+        <div class="quote-card">
+          <p>"Splitwise doesn't let you attach receipts and there's no export that looks official. I need something that holds up if this goes back to court."</p>
+          <span class="quote-source">r/Custody</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="container">
+      <h2>A ledger that holds up</h2>
+      <p class="features-sub">Built for the gap between Splitwise and a courthouse.</p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-icon">📋</span>
+          <h3>Shared ledger with categories</h3>
+          <p>Log utilities, childcare, activities, medical, and carpool separately. Both parents see the same record in real time.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📸</span>
+          <h3>Receipt photos with timestamps</h3>
+          <p>Attach a receipt photo to any expense. Each upload is timestamped at creation — nothing can be backdated.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📄</span>
+          <h3>One-tap audit PDF</h3>
+          <p>Export a clean, organized report for any date range. Formatted to bring to mediation or a family law attorney.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="container">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Invite your co-parent</h3>
+          <p>Send one link. Both of you see the same shared ledger from day one — no separate logins to manage.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Log expenses as they happen</h3>
+          <p>Add an expense, pick a category, attach the receipt photo. Takes 30 seconds. Disputes die before they start.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Export when you need it</h3>
+          <p>One tap generates an audit PDF for any date range. Bring it to mediation, your attorney, or keep it as a backup.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECOND CTA -->
+  <section class="second-cta">
+    <div class="container">
+      <h2>Get ahead of the next dispute.</h2>
+      <p>Join the waitlist. Free during early access. No court software subscription required.</p>
+      <button class="second-cta-btn" data-tally-open="D4xOrq" data-tally-emoji-text="⚖️" data-tally-emoji-animation="wave">Join the waitlist</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>FairSplit &mdash; <a href="mailto:justin.paul.lee.1996@gmail.com">Contact</a></p>
+  </footer>
+
+</body>
+</html>

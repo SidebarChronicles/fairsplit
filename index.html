@@ -20,7 +20,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- UTM passthrough -->
+  <!-- Meta Pixel — replace YOUR_PIXEL_ID with the ID from Meta Events Manager -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'YOUR_PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"
+  /></noscript>
+
+  <!-- UTM passthrough — captures ad-source UTMs into sessionStorage for the form to include -->
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
@@ -64,7 +81,7 @@
       font-size: 1.0625rem;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
       display: flex;
       align-items: center;
@@ -95,17 +112,17 @@
       font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s ease;
       text-decoration: none;
       display: inline-block;
+      transition: background 0.15s ease;
     }
     .nav-cta:hover { background: var(--green-dark); }
 
-    /* SECTIONS */
+    /* ── SECTIONS ── */
     section { padding: 5rem 2rem; }
     .container { max-width: var(--max); margin: 0 auto; }
 
-    /* HERO */
+    /* ── HERO ── */
     .hero {
       background: #fff;
       padding: 6rem 2rem;
@@ -144,10 +161,21 @@
       line-height: 1.65;
     }
 
-    #waitlist {
-      max-width: 480px;
-      margin: 0 auto;
+    .hero-cta {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.15s ease;
     }
+    .hero-cta:hover { background: var(--green-dark); }
 
     .hero-caption {
       margin-top: 0.85rem;
@@ -155,7 +183,7 @@
       color: var(--muted);
     }
 
-    /* PROBLEM */
+    /* ── PROBLEM ── */
     .problem {
       background: var(--blue);
       color: #fff;
@@ -211,7 +239,7 @@
       text-transform: uppercase;
     }
 
-    /* FEATURES */
+    /* ── FEATURES ── */
     .features { background: var(--cloud); }
 
     .features h2 {
@@ -264,7 +292,7 @@
       line-height: 1.6;
     }
 
-    /* HOW IT WORKS */
+    /* ── HOW IT WORKS ── */
     .how {
       background: #fff;
       border-top: 1px solid var(--cloud-dark);
@@ -320,45 +348,112 @@
       line-height: 1.6;
     }
 
-    /* SECOND CTA */
-    .second-cta {
+    /* ── WAITLIST (inline form) ── */
+    .waitlist {
       background: var(--blue);
       text-align: center;
       padding: 5rem 2rem;
       color: #fff;
     }
 
-    .second-cta h2 {
+    .waitlist h2 {
       font-family: var(--font-heading);
       font-size: clamp(1.75rem, 3.5vw, 2.5rem);
       margin-bottom: 1rem;
       letter-spacing: -0.015em;
     }
 
-    .second-cta p {
+    .waitlist p {
       font-size: 1.0625rem;
       opacity: 0.82;
       max-width: 500px;
       margin: 0 auto 2.25rem;
     }
 
-    .second-cta-btn {
+    .waitlist-form {
+      max-width: 460px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 560px) {
+      .waitlist-form {
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+    }
+
+    .waitlist-form input[type="email"] {
+      flex: 1;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      outline: none;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .waitlist-form input[type="email"]::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .waitlist-form input[type="email"]:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.55);
+    }
+
+    .waitlist-form button {
       background: var(--green);
       color: #fff;
       border: none;
-      padding: 0.9rem 2rem;
+      padding: 0.9rem 1.5rem;
       border-radius: var(--radius);
       font-family: var(--font-body);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
       transition: background 0.15s ease;
-      text-decoration: none;
-      display: inline-block;
     }
-    .second-cta-btn:hover { background: var(--green-dark); }
 
-    /* FOOTER */
+    .waitlist-form button:hover { background: var(--green-dark); }
+    .waitlist-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .waitlist-note {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    .waitlist-success,
+    .waitlist-error {
+      max-width: 500px;
+      margin: 1.5rem auto 0;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+    }
+
+    .waitlist-success {
+      background: rgba(39, 174, 96, 0.15);
+      border: 1px solid rgba(39, 174, 96, 0.45);
+      color: #fff;
+    }
+
+    .waitlist-error {
+      background: rgba(255, 100, 100, 0.12);
+      border: 1px solid rgba(255, 100, 100, 0.4);
+      color: #fff;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── FOOTER ── */
     footer {
       background: var(--cloud-dark);
       text-align: center;
@@ -366,13 +461,6 @@
       font-size: 0.875rem;
       color: var(--muted);
     }
-
-    footer a {
-      color: var(--blue);
-      text-decoration: none;
-    }
-
-    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -389,9 +477,7 @@
       <span class="hero-eyebrow">Free early access</span>
       <h1>Co-parenting expenses shouldn't cause arguments.</h1>
       <p class="hero-sub">Track shared costs, attach receipts, and export a clean audit record. No $288/yr court software required.</p>
-      <div id="waitlist">
-        <script async data-uid="4af74fd523" src="https://fairsplit.kit.com/4af74fd523/index.js"></script>
-      </div>
+      <a class="hero-cta" href="#waitlist">Get early access — it's free</a>
       <p class="hero-caption">No credit card. No court login. Just a clear record.</p>
     </div>
   </section>
@@ -467,19 +553,97 @@
     </div>
   </section>
 
-  <!-- SECOND CTA -->
-  <section class="second-cta">
+  <!-- WAITLIST -->
+  <section class="waitlist" id="waitlist">
     <div class="container">
       <h2>Get ahead of the next dispute.</h2>
-      <p>Join the waitlist. Free during early access. No court software subscription required.</p>
-      <a class="second-cta-btn" href="#waitlist">Join the waitlist</a>
+      <p>Drop your email. You'll hear from me — Justin, building this — when early access opens.</p>
+      <form class="waitlist-form" id="waitlist-form" novalidate>
+        <input type="email" name="email" id="waitlist-email" placeholder="you@example.com" required autocomplete="email" />
+        <button type="submit" id="waitlist-submit">Get early access</button>
+      </form>
+      <p class="waitlist-note">No credit card. No spam. Just one email when it's ready.</p>
+      <div class="waitlist-success hidden" id="waitlist-success">
+        Thanks — you're on the list. I'll be in touch personally.
+      </div>
+      <div class="waitlist-error hidden" id="waitlist-error">
+        Something went wrong. Try again, or email me directly at justin.paul.lee.1996@gmail.com.
+      </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <p>FairSplit &mdash; <a href="mailto:justin.paul.lee.1996@gmail.com">Contact</a></p>
+    <p>FairSplit</p>
   </footer>
+
+  <!-- Waitlist submit handler -->
+  <script>
+    (function () {
+      // Replace APPS_SCRIPT_URL with the deployed Google Apps Script web app URL.
+      var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_egTWhYZjqdJRLLwOV1YQEFeTFH_zBbyfiGcaVJW4GK_TW5BbWNnv0qoEPdE40gjYlw/exec';
+
+      var form    = document.getElementById('waitlist-form');
+      var emailIn = document.getElementById('waitlist-email');
+      var submit  = document.getElementById('waitlist-submit');
+      var success = document.getElementById('waitlist-success');
+      var errorEl = document.getElementById('waitlist-error');
+
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorEl.classList.add('hidden');
+
+        var email = (emailIn.value || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        submit.disabled = true;
+        var originalLabel = submit.textContent;
+        submit.textContent = 'Sending…';
+
+        var utm = {};
+        try { utm = JSON.parse(sessionStorage.getItem('utm_data') || '{}'); } catch (err) {}
+
+        var payload = {
+          email: email,
+          utm_source:   utm.utm_source   || '',
+          utm_medium:   utm.utm_medium   || '',
+          utm_campaign: utm.utm_campaign || '',
+          utm_content:  utm.utm_content  || '',
+          user_agent:   navigator.userAgent || ''
+        };
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.ok) {
+              form.classList.add('hidden');
+              success.classList.remove('hidden');
+              if (typeof fbq === 'function') {
+                fbq('track', 'Lead', { content_name: 'fairsplit_waitlist' });
+              }
+            } else {
+              throw new Error((data && data.error) || 'unknown');
+            }
+          })
+          .catch(function () {
+            submit.disabled = false;
+            submit.textContent = originalLabel;
+            errorEl.textContent = 'Something went wrong. Try again, or email me directly at justin.paul.lee.1996@gmail.com.';
+            errorEl.classList.remove('hidden');
+          });
+      });
+    })();
+  </script>
 
 </body>
 </html>

@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FairSplit — Split fairly. Document clearly. No arguments.</title>
-  <meta name="description" content="Track shared co-parenting expenses, attach receipts, and export an audit-ready report. No $288/yr court software required." />
+  <meta name="theme-color" content="#1D4E89" />
+  <title>FairSplit — Co-parenting expenses, finally documented.</title>
+  <meta name="description" content="Track shared co-parenting expenses, attach receipts, and export an audit-ready PDF. Built for separated parents who want a paper trail without paying $288/yr for court software." />
 
   <!-- Open Graph -->
   <meta property="og:title" content="FairSplit — Co-parenting expenses shouldn't cause arguments." />
-  <meta property="og:description" content="Track shared costs, attach receipts, and export a clean audit record. No $288/yr court software required. Free during early access." />
+  <meta property="og:description" content="Track shared costs, attach receipts, export a clean audit record. Free during early access." />
   <meta property="og:url" content="https://sidebarchronicles.github.io/fairsplit" />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://sidebarchronicles.github.io/fairsplit/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FairSplit — Co-parenting expenses shouldn't cause arguments." />
-  <meta name="twitter:description" content="Track shared costs, attach receipts, and export a clean audit record. Free during early access." />
+  <meta name="twitter:description" content="Track shared costs, attach receipts, export a clean audit record. Free during early access." />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Meta Pixel — replace YOUR_PIXEL_ID with the ID from Meta Events Manager -->
   <script>
@@ -55,18 +57,33 @@
     :root {
       --blue: #1D4E89;
       --blue-dark: #163a66;
+      --blue-soft: #2a5fa0;
       --green: #27AE60;
       --green-dark: #1e8a4a;
+      --green-soft: #e8f5ed;
       --cloud: #F7F9FC;
       --cloud-dark: #E8EDF3;
+      --cream: #FAF7F2;
+      --cream-deep: #F2EBDD;
       --text: #1a1f2e;
+      --text-soft: #2c3445;
       --muted: #5a6375;
+      --muted-soft: #8892a4;
+      --paper: #fff;
+      --hairline: rgba(26, 31, 46, 0.08);
 
       --font-heading: 'DM Serif Display', Georgia, serif;
       --font-body: 'DM Sans', system-ui, sans-serif;
 
-      --radius: 10px;
-      --max: 860px;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 20px;
+      --max: 1120px;
+      --max-narrow: 720px;
+
+      --shadow-card: 0 1px 2px rgba(26, 31, 46, 0.04), 0 8px 24px rgba(26, 31, 46, 0.06);
+      --shadow-phone: 0 30px 60px -20px rgba(29, 78, 137, 0.35), 0 12px 24px -8px rgba(29, 78, 137, 0.2);
+      --shadow-pdf: 0 1px 2px rgba(26, 31, 46, 0.05), 0 20px 40px -10px rgba(26, 31, 46, 0.18);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -75,455 +92,1502 @@
 
     body {
       font-family: var(--font-body);
-      background: var(--cloud);
+      background: var(--cream);
       color: var(--text);
       line-height: 1.6;
       font-size: 1.0625rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Focus states (skill rule) */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    summary:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* Reduced motion (skill rule) */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
 
     /* ── NAV ── */
-    nav {
+    nav.site-nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.25rem 2rem;
-      background: #fff;
-      border-bottom: 1px solid var(--cloud-dark);
+      padding: 1.25rem 1.5rem;
+      background: rgba(250, 247, 242, 0.92);
+      backdrop-filter: saturate(140%) blur(8px);
+      border-bottom: 1px solid var(--hairline);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 50;
     }
 
     .nav-logo {
       font-family: var(--font-heading);
-      font-size: 1.375rem;
+      font-size: 1.5rem;
       color: var(--blue);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .nav-cta {
-      background: var(--green);
+    .nav-logo-mark {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-soft) 100%);
+      align-items: center;
+      justify-content: center;
       color: #fff;
-      border: none;
-      padding: 0.6rem 1.25rem;
-      border-radius: var(--radius);
-      font-family: var(--font-body);
-      font-size: 0.9375rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.15s ease;
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      line-height: 1;
     }
-    .nav-cta:hover { background: var(--green-dark); }
 
-    /* ── SECTIONS ── */
-    section { padding: 5rem 2rem; }
+    .nav-meta {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-meta strong { color: var(--text); font-weight: 600; }
+
+    /* ── CONTAINERS / SECTIONS ── */
+    section { padding: 5rem 1.5rem; }
     .container { max-width: var(--max); margin: 0 auto; }
+    .container-narrow { max-width: var(--max-narrow); margin: 0 auto; }
+
+    @media (max-width: 640px) {
+      section { padding: 3.5rem 1.25rem; }
+    }
 
     /* ── HERO ── */
     .hero {
-      background: #fff;
-      padding: 6rem 2rem;
-      text-align: center;
-      border-bottom: 1px solid var(--cloud-dark);
+      background: var(--cream);
+      padding: 4.5rem 1.5rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -180px;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(39, 174, 96, 0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1.05fr 1fr;
+        gap: 4rem;
+      }
     }
 
     .hero-eyebrow {
-      display: inline-block;
-      background: var(--cloud-dark);
-      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--green-soft);
+      color: var(--green-dark);
       font-size: 0.8125rem;
       font-weight: 600;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      padding: 0.35rem 0.85rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 999px;
       margin-bottom: 1.5rem;
     }
 
+    .hero-eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.85); }
+    }
+
     .hero h1 {
       font-family: var(--font-heading);
-      font-size: clamp(2.25rem, 5vw, 3.5rem);
-      line-height: 1.15;
+      font-size: clamp(2.5rem, 5.5vw, 4rem);
+      line-height: 1.05;
       color: var(--text);
-      max-width: 680px;
-      margin: 0 auto 1.25rem;
-      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+      letter-spacing: -0.025em;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--blue);
     }
 
     .hero-sub {
-      font-size: 1.125rem;
+      font-size: 1.1875rem;
       color: var(--muted);
-      max-width: 540px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.65;
+      line-height: 1.55;
+      margin: 0 0 2rem;
+      max-width: 520px;
     }
 
-    .hero-cta {
-      background: var(--green);
-      color: #fff;
-      border: none;
-      padding: 0.9rem 2rem;
-      border-radius: var(--radius);
-      font-family: var(--font-body);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.15s ease;
-    }
-    .hero-cta:hover { background: var(--green-dark); }
-
-    .hero-caption {
-      margin-top: 0.85rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    /* ── PROBLEM ── */
-    .problem {
-      background: var(--blue);
-      color: #fff;
-      padding: 5rem 2rem;
-    }
-
-    .problem .container { max-width: var(--max); margin: 0 auto; }
-
-    .problem h2 {
-      font-family: var(--font-heading);
-      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.015em;
-    }
-
-    .problem-intro {
-      font-size: 1.0625rem;
-      opacity: 0.82;
-      margin-bottom: 2.75rem;
-      max-width: 560px;
-    }
-
-    .problem-quotes {
-      display: grid;
-      gap: 1.25rem;
-    }
-
-    @media (min-width: 640px) {
-      .problem-quotes { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .quote-card {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: var(--radius);
-      padding: 1.375rem 1.25rem;
-    }
-
-    .quote-card p {
-      font-size: 0.9375rem;
-      line-height: 1.6;
-      opacity: 0.92;
-      font-style: italic;
-      margin-bottom: 0.85rem;
-    }
-
-    .quote-source {
-      font-size: 0.775rem;
-      opacity: 0.55;
-      font-style: normal;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    /* ── FEATURES ── */
-    .features { background: var(--cloud); }
-
-    .features h2 {
-      font-family: var(--font-heading);
-      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-      text-align: center;
-      margin-bottom: 0.6rem;
-      letter-spacing: -0.015em;
-    }
-
-    .features-sub {
-      text-align: center;
-      color: var(--muted);
-      margin-bottom: 3rem;
-    }
-
-    .feature-grid {
-      display: grid;
-      gap: 1.25rem;
-    }
-
-    @media (min-width: 640px) {
-      .feature-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .feature-card {
-      background: #fff;
-      border: 1px solid var(--cloud-dark);
-      border-radius: var(--radius);
-      padding: 1.75rem 1.5rem;
-    }
-
-    .feature-icon {
-      font-size: 1.75rem;
-      margin-bottom: 0.85rem;
+    /* Form (shared between hero + waitlist) */
+    .form-label {
       display: block;
-    }
-
-    .feature-card h3 {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      color: var(--blue);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-soft);
       margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
+      letter-spacing: 0.02em;
     }
 
-    .feature-card p {
-      font-size: 0.9375rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── HOW IT WORKS ── */
-    .how {
-      background: #fff;
-      border-top: 1px solid var(--cloud-dark);
-      border-bottom: 1px solid var(--cloud-dark);
-    }
-
-    .how h2 {
-      font-family: var(--font-heading);
-      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-      text-align: center;
-      margin-bottom: 3rem;
-      letter-spacing: -0.015em;
-    }
-
-    .steps {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 640px) {
-      .steps { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .step {
-      text-align: center;
-      padding: 0 0.5rem;
-    }
-
-    .step-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5rem;
-      height: 2.5rem;
-      background: var(--blue);
-      color: #fff;
-      border-radius: 50%;
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .step h3 {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
-    }
-
-    .step p {
-      font-size: 0.9375rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── WAITLIST (inline form) ── */
-    .waitlist {
-      background: var(--blue);
-      text-align: center;
-      padding: 5rem 2rem;
-      color: #fff;
-    }
-
-    .waitlist h2 {
-      font-family: var(--font-heading);
-      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-      margin-bottom: 1rem;
-      letter-spacing: -0.015em;
-    }
-
-    .waitlist p {
-      font-size: 1.0625rem;
-      opacity: 0.82;
-      max-width: 500px;
-      margin: 0 auto 2.25rem;
-    }
-
-    .waitlist-form {
-      max-width: 460px;
-      margin: 0 auto;
+    .signup-form {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.6rem;
+      max-width: 480px;
     }
 
-    @media (min-width: 560px) {
-      .waitlist-form {
-        flex-direction: row;
-        gap: 0.5rem;
-      }
+    @media (min-width: 480px) {
+      .signup-form { flex-direction: row; gap: 0.5rem; align-items: flex-end; }
     }
 
-    .waitlist-form input[type="email"] {
+    .signup-form-input { flex: 1; display: flex; flex-direction: column; }
+
+    .signup-form input[type="email"] {
       flex: 1;
-      padding: 0.9rem 1rem;
+      padding: 0.95rem 1.1rem;
       border-radius: var(--radius);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
+      border: 1.5px solid var(--cloud-dark);
+      background: #fff;
+      color: var(--text);
       font-family: var(--font-body);
       font-size: 1rem;
       outline: none;
-      transition: background 0.15s ease, border-color 0.15s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      min-height: 48px;
     }
 
-    .waitlist-form input[type="email"]::placeholder {
-      color: rgba(255, 255, 255, 0.55);
+    .signup-form input[type="email"]::placeholder { color: var(--muted-soft); }
+
+    .signup-form input[type="email"]:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
     }
 
-    .waitlist-form input[type="email"]:focus {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.55);
-    }
-
-    .waitlist-form button {
+    .signup-form button {
       background: var(--green);
       color: #fff;
       border: none;
-      padding: 0.9rem 1.5rem;
+      padding: 0.95rem 1.5rem;
       border-radius: var(--radius);
       font-family: var(--font-body);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.15s ease;
+      transition: background 0.2s ease, transform 0.15s ease;
+      min-height: 48px;
     }
 
-    .waitlist-form button:hover { background: var(--green-dark); }
-    .waitlist-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .signup-form button:hover { background: var(--green-dark); }
+    .signup-form button:active { transform: translateY(1px); }
+    .signup-form button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    .waitlist-note {
+    /* Hero trust row */
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      flex-wrap: wrap;
       margin-top: 1rem;
-      font-size: 0.85rem;
-      opacity: 0.7;
     }
 
-    .waitlist-success,
-    .waitlist-error {
-      max-width: 500px;
-      margin: 1.5rem auto 0;
-      padding: 1rem 1.25rem;
-      border-radius: var(--radius);
-      font-size: 0.95rem;
+    .hero-trust .dot {
+      width: 4px;
+      height: 4px;
+      background: var(--muted-soft);
+      border-radius: 50%;
     }
 
-    .waitlist-success {
-      background: rgba(39, 174, 96, 0.15);
-      border: 1px solid rgba(39, 174, 96, 0.45);
-      color: #fff;
+    .signup-message {
+      margin-top: 0.9rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      max-width: 480px;
     }
 
-    .waitlist-error {
-      background: rgba(255, 100, 100, 0.12);
-      border: 1px solid rgba(255, 100, 100, 0.4);
-      color: #fff;
+    .signup-success {
+      background: var(--green-soft);
+      color: var(--green-dark);
+      border: 1px solid rgba(39, 174, 96, 0.3);
+    }
+
+    .signup-error {
+      background: rgba(220, 76, 76, 0.08);
+      color: #a52a2a;
+      border: 1px solid rgba(220, 76, 76, 0.25);
     }
 
     .hidden { display: none !important; }
 
-    /* ── FOOTER ── */
-    footer {
-      background: var(--cloud-dark);
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.875rem;
+    /* ── PHONE MOCKUP (CSS rendered) ── */
+    .phone-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1200px;
+    }
+
+    .phone {
+      width: 290px;
+      max-width: 100%;
+      background: #1a1f2e;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: var(--shadow-phone);
+      transform: rotate(-2deg);
+      position: relative;
+    }
+
+    @media (min-width: 960px) {
+      .phone { transform: rotate(-3deg); }
+    }
+
+    .phone-screen {
+      background: #fff;
+      border-radius: 26px;
+      overflow: hidden;
+      aspect-ratio: 9 / 19.5;
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .phone-statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .phone-statusbar-right { display: inline-flex; gap: 3px; align-items: center; }
+
+    .phone-header {
+      padding: 6px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--cloud-dark);
+    }
+
+    .phone-header-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      color: var(--blue);
+      letter-spacing: -0.01em;
+    }
+
+    .phone-header-meta {
+      font-size: 10px;
       color: var(--muted);
+      font-weight: 500;
+    }
+
+    .phone-settle {
+      margin: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-soft) 100%);
+      color: #fff;
+      border-radius: 12px;
+    }
+
+    .phone-settle-label {
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.78;
+      margin-bottom: 4px;
+    }
+
+    .phone-settle-amount {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+
+    .phone-settle-sub {
+      font-size: 10px;
+      opacity: 0.85;
+    }
+
+    .phone-list-header {
+      padding: 6px 16px 4px;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .phone-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--cloud-dark);
+    }
+
+    .phone-row:last-child { border-bottom: 0; }
+
+    .phone-row-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--cloud);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .phone-row-icon.green { background: var(--green-soft); color: var(--green-dark); }
+    .phone-row-icon.cream { background: var(--cream-deep); color: #8c6d2a; }
+
+    .phone-row-body { flex: 1; min-width: 0; }
+
+    .phone-row-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .phone-row-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .phone-row-amount {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .phone-fab {
+      position: absolute;
+      bottom: 22px;
+      right: 22px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(39, 174, 96, 0.35);
+    }
+
+    /* ── FOUNDER STRIP ── */
+    .founder {
+      background: var(--cream);
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .founder-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .founder-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--green) 130%);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .founder-quote {
+      font-size: 0.9375rem;
+      color: var(--text-soft);
+      line-height: 1.5;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .founder-quote em {
+      font-family: var(--font-heading);
+      font-style: italic;
+      color: var(--blue);
+    }
+
+    /* ── PROBLEM / PULL-QUOTES ── */
+    .problem {
+      background: var(--cream);
+      padding: 5rem 1.5rem 4rem;
+    }
+
+    .problem-intro {
+      max-width: 640px;
+      margin: 0 auto 3.5rem;
+      text-align: center;
+    }
+
+    .problem-intro h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.875rem, 4vw, 2.75rem);
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      line-height: 1.15;
+    }
+
+    .problem-intro p {
+      color: var(--muted);
+      font-size: 1.0625rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .pull-quotes {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .pull-quote {
+      position: relative;
+      padding: 1.25rem 1.5rem 1rem 3.25rem;
+      max-width: 620px;
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      position: absolute;
+      top: -0.5rem;
+      left: 0.25rem;
+      font-family: var(--font-heading);
+      font-size: 5.5rem;
+      line-height: 1;
+      color: var(--green);
+      opacity: 0.85;
+    }
+
+    .pull-quote p {
+      font-family: var(--font-heading);
+      font-style: italic;
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+      line-height: 1.45;
+      color: var(--text-soft);
+      letter-spacing: -0.005em;
+      margin: 0 0 0.75rem;
+    }
+
+    .pull-quote .source {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .pull-quote:nth-child(2) {
+      margin-left: auto;
+    }
+
+    /* ── PRODUCT SHOWCASE (scenes) ── */
+    .showcase {
+      background: var(--paper);
+      padding: 6rem 1.5rem;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .showcase-header {
+      max-width: 640px;
+      margin: 0 auto 4rem;
+      text-align: center;
+    }
+
+    .showcase-header .label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green-dark);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .showcase-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.875rem, 4vw, 2.75rem);
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.15;
+    }
+
+    .scene {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (min-width: 880px) {
+      .scene {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+      }
+      .scene + .scene { margin-top: 5rem; }
+      .scene.reverse .scene-visual { order: -1; }
+    }
+
+    .scene + .scene { margin-top: 3.5rem; }
+
+    .scene-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green-dark);
+      margin-bottom: 0.75rem;
+    }
+
+    .scene-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--green-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .scene h3 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2.125rem);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 0.875rem;
+    }
+
+    .scene p {
+      color: var(--muted);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      max-width: 440px;
+    }
+
+    .scene-visual { display: flex; justify-content: center; }
+
+    /* Scene 1 — entry mockup card */
+    .entry-card {
+      background: #fff;
+      border: 1px solid var(--cloud-dark);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: var(--shadow-card);
+    }
+
+    .entry-row { margin-bottom: 1rem; }
+    .entry-row:last-child { margin-bottom: 0; }
+
+    .entry-row .label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .entry-amount {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .entry-amount small {
+      font-size: 1.25rem;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+
+    .entry-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    .entry-text {
+      font-size: 0.9375rem;
+      color: var(--text-soft);
+    }
+
+    .entry-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--cloud-dark);
+    }
+
+    .entry-meta-grid .label { margin-bottom: 0.2rem; }
+    .entry-meta-grid .value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Scene 2 — receipt attached */
+    .receipt-stack {
+      position: relative;
+      max-width: 340px;
+      width: 100%;
+    }
+
+    .receipt-expense {
+      background: #fff;
+      border: 1px solid var(--cloud-dark);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      z-index: 2;
+    }
+
+    .receipt-expense-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .receipt-expense-title {
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      color: var(--text);
+    }
+
+    .receipt-expense-amount {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: var(--blue);
+    }
+
+    .receipt-expense-meta {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 0.875rem;
+    }
+
+    .receipt-attached {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding-top: 0.875rem;
+      border-top: 1px dashed var(--cloud-dark);
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .receipt-thumb {
+      position: absolute;
+      top: -18px;
+      right: -22px;
+      width: 110px;
+      height: 130px;
+      background: #fffdf6;
+      border: 1px solid var(--cream-deep);
+      border-radius: 4px;
+      transform: rotate(6deg);
+      box-shadow: 0 8px 24px -4px rgba(26, 31, 46, 0.18);
+      padding: 10px;
+      font-size: 7px;
+      color: #8c7a55;
+      line-height: 1.35;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .receipt-thumb-line {
+      height: 4px;
+      background: rgba(140, 122, 85, 0.18);
+      border-radius: 2px;
+      margin-bottom: 4px;
+    }
+
+    .receipt-thumb-line.short { width: 60%; }
+    .receipt-thumb-line.med { width: 80%; }
+    .receipt-thumb-line.total {
+      height: 6px;
+      background: rgba(140, 122, 85, 0.45);
+      width: 45%;
+      margin-top: 6px;
+    }
+
+    .receipt-thumb-head {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      color: #6b5a35;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+    }
+
+    /* Scene 3 — PDF preview */
+    .pdf-preview {
+      background: #fff;
+      border-radius: 10px;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: var(--shadow-pdf);
+      overflow: hidden;
+      transform: rotate(1.5deg);
+    }
+
+    .pdf-header {
+      background: var(--blue);
+      color: #fff;
+      padding: 1rem 1.25rem;
+    }
+
+    .pdf-header h4 {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      letter-spacing: -0.005em;
+      margin-bottom: 0.25rem;
+    }
+
+    .pdf-header .meta {
+      font-size: 0.6875rem;
+      opacity: 0.78;
+      letter-spacing: 0.04em;
+    }
+
+    .pdf-body { padding: 1rem 1.25rem; }
+
+    .pdf-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .pdf-table th {
+      text-align: left;
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--cloud-dark);
+    }
+
+    .pdf-table th:last-child, .pdf-table td:last-child { text-align: right; }
+
+    .pdf-table td {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--cloud);
+    }
+
+    .pdf-table td.cat {
+      color: var(--muted);
+      font-size: 0.625rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .pdf-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+      margin-top: 0.25rem;
+      border-top: 2px solid var(--text);
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      color: var(--text);
+    }
+
+    .pdf-footer {
+      padding: 0.65rem 1.25rem;
+      background: var(--cloud);
+      font-size: 0.625rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      background: var(--cream);
+      padding: 5rem 1.5rem;
+    }
+
+    .how-header {
+      max-width: 640px;
+      margin: 0 auto 3rem;
+      text-align: center;
+    }
+
+    .how-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .steps {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 720px) {
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    }
+
+    .step {
+      padding: 1.75rem 1.5rem;
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .step:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      margin-bottom: 0.875rem;
+    }
+
+    .step h3 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── FAQ ── */
+    .faq {
+      background: var(--paper);
+      padding: 5rem 1.5rem;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .faq-header {
+      max-width: 640px;
+      margin: 0 auto 3rem;
+      text-align: center;
+    }
+
+    .faq-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .faq-list {
+      max-width: var(--max-narrow);
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-top: 1px solid var(--hairline);
+      padding: 0;
+    }
+
+    .faq-item:last-child { border-bottom: 1px solid var(--hairline); }
+
+    .faq-item summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-family: var(--font-heading);
+      font-size: 1.1875rem;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      transition: color 0.2s ease;
+    }
+
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--blue); }
+
+    .faq-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      color: var(--muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .faq-item[open] .faq-icon {
+      transform: rotate(45deg);
+      color: var(--green);
+    }
+
+    .faq-body {
+      padding: 0 0 1.5rem;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 600px;
+    }
+
+    /* ── WAITLIST FINAL CTA ── */
+    .waitlist {
+      background: linear-gradient(180deg, var(--blue) 0%, var(--blue-dark) 100%);
+      text-align: center;
+      padding: 5rem 1.5rem 5.5rem;
+      color: #fff;
+    }
+
+    .waitlist .label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .waitlist h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.875rem, 4vw, 2.75rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .waitlist p {
+      font-size: 1.0625rem;
+      opacity: 0.85;
+      max-width: 520px;
+      margin: 0 auto 2.25rem;
+    }
+
+    .waitlist .signup-form {
+      margin: 0 auto;
+      max-width: 480px;
+    }
+
+    .waitlist .signup-form input[type="email"] {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .waitlist .signup-form input[type="email"]::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .waitlist .signup-form input[type="email"]:focus {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    }
+
+    .waitlist .form-label { color: rgba(255, 255, 255, 0.78); }
+
+    .waitlist-note {
+      margin-top: 1.25rem;
+      font-size: 0.875rem;
+      opacity: 0.65;
+    }
+
+    .waitlist .signup-success {
+      background: rgba(39, 174, 96, 0.18);
+      border-color: rgba(39, 174, 96, 0.5);
+      color: #fff;
+      max-width: 480px;
+      margin: 1rem auto 0;
+    }
+
+    .waitlist .signup-error {
+      background: rgba(255, 100, 100, 0.16);
+      border-color: rgba(255, 100, 100, 0.4);
+      color: #fff;
+      max-width: 480px;
+      margin: 1rem auto 0;
+    }
+
+    /* ── FOOTER ── */
+    footer.site-footer {
+      background: var(--cream);
+      text-align: center;
+      padding: 2.5rem 1.5rem 6rem;
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    @media (min-width: 720px) {
+      footer.site-footer { padding-bottom: 2.5rem; }
+    }
+
+    .footer-logo {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ── STICKY MOBILE CTA ── */
+    .sticky-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0));
+      background: rgba(26, 31, 46, 0.96);
+      backdrop-filter: saturate(140%) blur(10px);
+      color: #fff;
+      z-index: 40;
+      box-shadow: 0 -8px 24px rgba(26, 31, 46, 0.18);
+      text-decoration: none;
+    }
+
+    .sticky-cta-text {
+      font-size: 0.875rem;
+      line-height: 1.3;
+    }
+
+    .sticky-cta-text strong { color: #fff; font-weight: 600; display: block; }
+    .sticky-cta-text span { color: rgba(255, 255, 255, 0.7); display: block; font-size: 0.75rem; }
+
+    .sticky-cta-btn {
+      background: var(--green);
+      color: #fff;
+      padding: 0.75rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .sticky-cta:hover .sticky-cta-btn { background: var(--green-dark); }
+
+    @media (min-width: 720px) {
+      .sticky-cta { display: none; }
     }
   </style>
 </head>
 <body>
 
   <!-- NAV -->
-  <nav>
-    <a class="nav-logo" href="#">FairSplit</a>
-    <a class="nav-cta" href="#waitlist">Join waitlist</a>
+  <nav class="site-nav">
+    <a class="nav-logo" href="#top" aria-label="FairSplit home">
+      <span class="nav-logo-mark" aria-hidden="true">F</span>
+      FairSplit
+    </a>
+    <span class="nav-meta"><strong>Free</strong> during early access</span>
   </nav>
+
+  <a id="top"></a>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="container">
-      <span class="hero-eyebrow">Free early access</span>
-      <h1>Co-parenting expenses shouldn't cause arguments.</h1>
-      <p class="hero-sub">Track shared costs, attach receipts, and export a clean audit record. No $288/yr court software required.</p>
-      <a class="hero-cta" href="#waitlist">Get early access — it's free</a>
-      <p class="hero-caption">No credit card. No court login. Just a clear record.</p>
-    </div>
-  </section>
+    <div class="hero-grid">
+      <div>
+        <span class="hero-eyebrow">
+          <span class="hero-eyebrow-dot" aria-hidden="true"></span>
+          Early access — open now
+        </span>
+        <h1>Co-parenting expenses, <em>finally documented.</em></h1>
+        <p class="hero-sub">Track every shared cost, attach the receipt at the moment it happens, and export an audit-ready PDF when you actually need it. Built for the gap between Splitwise and a courthouse.</p>
 
-  <!-- PROBLEM -->
-  <section class="problem">
-    <div class="container">
-      <h2>Sound familiar?</h2>
-      <p class="problem-intro">Thousands of co-parents are running shared finances through Venmo notes and screenshots. It works until it doesn't.</p>
-      <div class="problem-quotes">
-        <div class="quote-card">
-          <p>"He reimbursed me $200 but I can't prove the original $600 was for school supplies and not something else. Venmo history is useless in mediation."</p>
-          <span class="quote-source">r/Divorce</span>
+        <form class="signup-form" id="hero-form" novalidate aria-describedby="hero-form-help">
+          <div class="signup-form-input">
+            <label for="hero-email" class="form-label">Your email</label>
+            <input type="email" name="email" id="hero-email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+          <button type="submit" id="hero-submit">Get early access</button>
+        </form>
+
+        <div class="signup-message signup-success hidden" id="hero-success" role="status" aria-live="polite">
+          Thanks — you're on the list. I'll be in touch personally before launch.
         </div>
-        <div class="quote-card">
-          <p>"OurFamilyWizard is $144 per parent per year. I'm already paying child support. There has to be a cheaper way to keep records she can't dispute."</p>
-          <span class="quote-source">r/SingleParents</span>
-        </div>
-        <div class="quote-card">
-          <p>"Splitwise doesn't let you attach receipts and there's no export that looks official. I need something that holds up if this goes back to court."</p>
-          <span class="quote-source">r/Custody</span>
+        <div class="signup-message signup-error hidden" id="hero-error" role="alert" aria-live="assertive"></div>
+
+        <p id="hero-form-help" class="hero-trust">
+          <span>Free during early access</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>No credit card</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>One email when it's ready</span>
+        </p>
+      </div>
+
+      <div class="phone-stage" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-statusbar">
+              <span>9:41</span>
+              <span class="phone-statusbar-right">
+                <svg width="14" height="9" viewBox="0 0 14 9" fill="currentColor"><path d="M0 7h2v2H0zM4 5h2v4H4zM8 3h2v6H8zM12 0h2v9h-2z"/></svg>
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="18" height="9" rx="2"/><rect x="2" y="2" width="14" height="6" rx="1" fill="currentColor"/><rect x="19.5" y="3.5" width="2" height="3" rx="0.5" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="phone-header">
+              <div>
+                <div class="phone-header-title">May 2026</div>
+                <div class="phone-header-meta">Shared ledger · Jordan &amp; Sam</div>
+              </div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </div>
+
+            <div class="phone-settle">
+              <div class="phone-settle-label">Sam owes Jordan</div>
+              <div class="phone-settle-amount">$142.25</div>
+              <div class="phone-settle-sub">Across 6 shared expenses this month</div>
+            </div>
+
+            <div class="phone-list-header">Recent</div>
+
+            <div class="phone-row">
+              <span class="phone-row-icon green" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+              </span>
+              <div class="phone-row-body">
+                <div class="phone-row-title">Hazel's pediatrician copay</div>
+                <div class="phone-row-sub">Medical · May 18 · Receipt</div>
+              </div>
+              <div class="phone-row-amount">$45.00</div>
+            </div>
+
+            <div class="phone-row">
+              <span class="phone-row-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </span>
+              <div class="phone-row-body">
+                <div class="phone-row-title">After-school program — May</div>
+                <div class="phone-row-sub">Activities · May 14</div>
+              </div>
+              <div class="phone-row-amount">$182.50</div>
+            </div>
+
+            <div class="phone-row">
+              <span class="phone-row-icon cream" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </span>
+              <div class="phone-row-body">
+                <div class="phone-row-title">Shoes + spring jackets</div>
+                <div class="phone-row-sub">Clothing · May 9 · Receipt</div>
+              </div>
+              <div class="phone-row-amount">$118.00</div>
+            </div>
+
+            <div class="phone-row">
+              <span class="phone-row-icon green" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              </span>
+              <div class="phone-row-body">
+                <div class="phone-row-title">Dentist — Casey's checkup</div>
+                <div class="phone-row-sub">Medical · May 4 · Receipt</div>
+              </div>
+              <div class="phone-row-amount">$78.50</div>
+            </div>
+          </div>
+          <div class="phone-fab" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section class="features">
-    <div class="container">
-      <h2>A ledger that holds up</h2>
-      <p class="features-sub">Built for the gap between Splitwise and a courthouse.</p>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <span class="feature-icon">📋</span>
-          <h3>Shared ledger with categories</h3>
-          <p>Log utilities, childcare, activities, medical, and carpool separately. Both parents see the same record in real time.</p>
+  <!-- FOUNDER TRUST STRIP -->
+  <section class="founder">
+    <div class="founder-inner">
+      <div class="founder-avatar" aria-hidden="true">J</div>
+      <p class="founder-quote">
+        <em>I'm Justin.</em> I'm building FairSplit after watching friends fight about Venmo receipts every other month. One email when early access opens — from me personally, not a marketing tool.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROBLEM / PULL-QUOTES -->
+  <section class="problem">
+    <div class="problem-intro">
+      <h2>Sound familiar?</h2>
+      <p>Thousands of co-parents are running shared finances through Venmo notes and screenshots. It works until something goes to mediation.</p>
+    </div>
+
+    <div class="pull-quotes">
+      <figure class="pull-quote">
+        <p>He reimbursed me $200 but I can't prove the original $600 was for school supplies and not something else. Venmo history is useless in mediation.</p>
+        <figcaption class="source">From r/Divorce</figcaption>
+      </figure>
+      <figure class="pull-quote">
+        <p>OurFamilyWizard is $144 per parent per year. I'm already paying child support. There has to be a cheaper way to keep records she can't dispute.</p>
+        <figcaption class="source">From r/SingleParents</figcaption>
+      </figure>
+      <figure class="pull-quote">
+        <p>Splitwise doesn't let you attach receipts and there's no export that looks official. I need something that holds up if this goes back to court.</p>
+        <figcaption class="source">From r/Custody</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- PRODUCT SHOWCASE -->
+  <section class="showcase">
+    <div class="showcase-header">
+      <span class="label">How it works in 30 seconds</span>
+      <h2>Three moments. One paper trail.</h2>
+    </div>
+
+    <!-- Scene 1 -->
+    <div class="scene">
+      <div class="scene-copy">
+        <div class="scene-step"><span class="scene-step-num">1</span> Log it</div>
+        <h3>Add an expense in under 30 seconds.</h3>
+        <p>Amount, category, who paid. Done. Both parents see the same shared ledger in real time. No double-entry, no spreadsheet to maintain.</p>
+      </div>
+      <div class="scene-visual">
+        <div class="entry-card" aria-hidden="true">
+          <div class="entry-row">
+            <span class="label">Amount</span>
+            <div class="entry-amount">$45<small>.00</small></div>
+          </div>
+          <div class="entry-row">
+            <span class="label">Category</span>
+            <span class="entry-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+              Medical
+            </span>
+          </div>
+          <div class="entry-row">
+            <span class="label">Note</span>
+            <div class="entry-text">Hazel's pediatrician copay</div>
+          </div>
+          <div class="entry-meta-grid">
+            <div>
+              <span class="label">Date</span>
+              <div class="value">May 18, 2026</div>
+            </div>
+            <div>
+              <span class="label">Paid by</span>
+              <div class="value">Jordan</div>
+            </div>
+          </div>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">📸</span>
-          <h3>Receipt photos with timestamps</h3>
-          <p>Attach a receipt photo to any expense. Each upload is timestamped at creation — nothing can be backdated.</p>
+      </div>
+    </div>
+
+    <!-- Scene 2 -->
+    <div class="scene reverse">
+      <div class="scene-copy">
+        <div class="scene-step"><span class="scene-step-num">2</span> Keep the receipt</div>
+        <h3>Attach the receipt at the moment it happens.</h3>
+        <p>Snap a photo from the camera. The receipt is timestamped at upload — nothing can be backdated, nothing gets lost in a camera roll six months later when a dispute starts.</p>
+      </div>
+      <div class="scene-visual">
+        <div class="receipt-stack" aria-hidden="true">
+          <div class="receipt-thumb">
+            <div class="receipt-thumb-head">PEDIATRICS</div>
+            <div class="receipt-thumb-line med"></div>
+            <div class="receipt-thumb-line short"></div>
+            <div class="receipt-thumb-line med"></div>
+            <div class="receipt-thumb-line"></div>
+            <div class="receipt-thumb-line short"></div>
+            <div class="receipt-thumb-line total"></div>
+          </div>
+          <div class="receipt-expense">
+            <div class="receipt-expense-head">
+              <span class="receipt-expense-title">Hazel's copay</span>
+              <span class="receipt-expense-amount">$45.00</span>
+            </div>
+            <div class="receipt-expense-meta">Medical · May 18, 2026 · Paid by Jordan</div>
+            <div class="receipt-attached">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--green);"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.98 8.86l-8.58 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              <span>Receipt attached · Uploaded May 18, 4:12 PM</span>
+            </div>
+          </div>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">📄</span>
-          <h3>One-tap audit PDF</h3>
-          <p>Export a clean, organized report for any date range. Formatted to bring to mediation or a family law attorney.</p>
+      </div>
+    </div>
+
+    <!-- Scene 3 -->
+    <div class="scene">
+      <div class="scene-copy">
+        <div class="scene-step"><span class="scene-step-num">3</span> Export when it matters</div>
+        <h3>One tap generates the audit PDF.</h3>
+        <p>Pick a date range, hit export. You get a clean, organized report formatted for mediation, your attorney, or your tax preparer. Bring it to the meeting, or just keep it as your own backup.</p>
+      </div>
+      <div class="scene-visual">
+        <div class="pdf-preview" aria-hidden="true">
+          <div class="pdf-header">
+            <h4>Shared Expense Report</h4>
+            <div class="meta">Jordan &amp; Sam · May 1 – May 31, 2026</div>
+          </div>
+          <div class="pdf-body">
+            <table class="pdf-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>May 18</td>
+                  <td>
+                    Hazel's pediatrician copay
+                    <div class="cat">Medical</div>
+                  </td>
+                  <td>$45.00</td>
+                </tr>
+                <tr>
+                  <td>May 14</td>
+                  <td>
+                    After-school program
+                    <div class="cat">Activities</div>
+                  </td>
+                  <td>$182.50</td>
+                </tr>
+                <tr>
+                  <td>May 9</td>
+                  <td>
+                    Shoes &amp; spring jackets
+                    <div class="cat">Clothing</div>
+                  </td>
+                  <td>$118.00</td>
+                </tr>
+                <tr>
+                  <td>May 4</td>
+                  <td>
+                    Dentist — Casey
+                    <div class="cat">Medical</div>
+                  </td>
+                  <td>$78.50</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pdf-total">
+              <span>Total shared</span>
+              <span>$424.00</span>
+            </div>
+          </div>
+          <div class="pdf-footer">FairSplit · Generated May 31, 2026</div>
         </div>
       </div>
     </div>
@@ -531,116 +1595,213 @@
 
   <!-- HOW IT WORKS -->
   <section class="how">
-    <div class="container">
-      <h2>How it works</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3>Invite your co-parent</h3>
-          <p>Send one link. Both of you see the same shared ledger from day one — no separate logins to manage.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Log expenses as they happen</h3>
-          <p>Add an expense, pick a category, attach the receipt photo. Takes 30 seconds. Disputes die before they start.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Export when you need it</h3>
-          <p>One tap generates an audit PDF for any date range. Bring it to mediation, your attorney, or keep it as a backup.</p>
-        </div>
+    <div class="how-header">
+      <h2>From signup to documented in five minutes.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Invite your co-parent</h3>
+        <p>Send one link. You both see the same ledger from day one. No separate accounts to reconcile.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Log expenses as they happen</h3>
+        <p>Amount, category, receipt photo. Takes thirty seconds. Disputes die before they start.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Export when you need it</h3>
+        <p>One tap, any date range, audit-ready PDF. For mediation, your attorney, or just peace of mind.</p>
       </div>
     </div>
   </section>
 
-  <!-- WAITLIST -->
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="faq-header">
+      <h2>Questions people ask before signing up.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>
+          Is this actually free?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-body">
+          Yes — free during early access, and free forever for the core ledger, receipts, and PDF export. If FairSplit ever charges, it'll be for advanced features like multi-year archives or attorney-shareable links — never the core workflow. Early-access users are grandfathered in regardless.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          What if my co-parent refuses to use it?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-body">
+          You can still use FairSplit solo. Most users start that way — log your shared expenses, attach receipts, and have a clean record ready. You can always invite them later, or just bring the PDF to mediation on your own.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          Will the PDF actually hold up in court?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-body">
+          FairSplit is built for mediation and family-law attorney workflows — every entry is timestamped at creation, receipts can't be backdated, and the PDF includes a clean date range and category breakdown. The format is designed alongside family-law mediators. It's not a replacement for legal advice, but it gives you a far better record than Venmo notes.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          How is this different from Splitwise?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-body">
+          Splitwise is for roommates and trips — it doesn't let you attach receipts, doesn't track expenses by child, and its exports aren't formatted for any professional context. FairSplit is built for one job: documenting shared kid expenses in a way that holds up if something gets contested.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          When does early access open?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-body">
+          Rolling early access through summer 2026. Waitlist signups get the first invites and a free plan locked in for life. You'll get one personal email from me — Justin — when your invite is ready, plus an optional 10-minute call to ask what you'd want first.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          Who can see my data?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </summary>
+        <div class="faq-body">
+          Only you and the co-parent you invite. FairSplit doesn't sell data, doesn't run ads against your expense history, and doesn't share anything with attorneys, courts, or third parties unless you export the PDF and send it yourself. You can delete your account and all records at any time.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- WAITLIST FINAL CTA -->
   <section class="waitlist" id="waitlist">
-    <div class="container">
-      <h2>Get ahead of the next dispute.</h2>
-      <p>Drop your email. You'll hear from me — Justin, building this — when early access opens.</p>
-      <form class="waitlist-form" id="waitlist-form" novalidate>
-        <input type="email" name="email" id="waitlist-email" placeholder="you@example.com" required autocomplete="email" />
+    <div class="container-narrow">
+      <span class="label">Get ahead of the next dispute</span>
+      <h2>Be the parent with the receipts.</h2>
+      <p>Drop your email. You'll hear from me — Justin, building this — when early access opens. No drip, no spam, no funnel. One email when it's ready.</p>
+
+      <form class="signup-form" id="waitlist-form" novalidate aria-describedby="waitlist-form-help">
+        <div class="signup-form-input">
+          <label for="waitlist-email" class="form-label">Your email</label>
+          <input type="email" name="email" id="waitlist-email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
         <button type="submit" id="waitlist-submit">Get early access</button>
       </form>
-      <p class="waitlist-note">No credit card. No spam. Just one email when it's ready.</p>
-      <div class="waitlist-success hidden" id="waitlist-success">
-        Thanks — you're on the list. I'll be in touch personally.
+
+      <div class="signup-message signup-success hidden" id="waitlist-success" role="status" aria-live="polite">
+        Thanks — you're on the list. I'll be in touch personally before launch.
       </div>
-      <div class="waitlist-error hidden" id="waitlist-error">
-        Something went wrong. Try again, or email me directly at justin.paul.lee.1996@gmail.com.
-      </div>
+      <div class="signup-message signup-error hidden" id="waitlist-error" role="alert" aria-live="assertive"></div>
+
+      <p id="waitlist-form-help" class="waitlist-note">No credit card. No spam. One email when it's ready.</p>
     </div>
   </section>
 
   <!-- FOOTER -->
-  <footer>
-    <p>FairSplit</p>
+  <footer class="site-footer">
+    <div class="footer-logo">FairSplit</div>
+    <p>Split fairly. Document clearly. No arguments.</p>
   </footer>
 
-  <!-- Waitlist submit handler -->
+  <!-- STICKY MOBILE CTA -->
+  <a class="sticky-cta" href="#waitlist" aria-label="Jump to waitlist signup">
+    <div class="sticky-cta-text">
+      <strong>Get early access</strong>
+      <span>Free during early access</span>
+    </div>
+    <span class="sticky-cta-btn">
+      Sign up
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </span>
+  </a>
+
+  <!-- Waitlist submit handler — shared across both forms -->
   <script>
     (function () {
-      // Replace APPS_SCRIPT_URL with the deployed Google Apps Script web app URL.
       var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_egTWhYZjqdJRLLwOV1YQEFeTFH_zBbyfiGcaVJW4GK_TW5BbWNnv0qoEPdE40gjYlw/exec';
 
-      var form    = document.getElementById('waitlist-form');
-      var emailIn = document.getElementById('waitlist-email');
-      var submit  = document.getElementById('waitlist-submit');
-      var success = document.getElementById('waitlist-success');
-      var errorEl = document.getElementById('waitlist-error');
+      function attachForm(opts) {
+        var form    = document.getElementById(opts.formId);
+        var emailIn = document.getElementById(opts.emailId);
+        var submit  = document.getElementById(opts.submitId);
+        var success = document.getElementById(opts.successId);
+        var errorEl = document.getElementById(opts.errorId);
 
-      if (!form) return;
+        if (!form || !emailIn || !submit || !success || !errorEl) return;
 
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        errorEl.classList.add('hidden');
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          errorEl.classList.add('hidden');
 
-        var email = (emailIn.value || '').trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          errorEl.textContent = 'Please enter a valid email address.';
-          errorEl.classList.remove('hidden');
-          return;
-        }
-
-        submit.disabled = true;
-        var originalLabel = submit.textContent;
-        submit.textContent = 'Sending…';
-
-        var utm = {};
-        try { utm = JSON.parse(sessionStorage.getItem('utm_data') || '{}'); } catch (err) {}
-
-        var payload = {
-          email: email,
-          utm_source:   utm.utm_source   || '',
-          utm_medium:   utm.utm_medium   || '',
-          utm_campaign: utm.utm_campaign || '',
-          utm_content:  utm.utm_content  || '',
-          user_agent:   navigator.userAgent || ''
-        };
-
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        })
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (data && data.ok) {
-              form.classList.add('hidden');
-              success.classList.remove('hidden');
-              if (typeof fbq === 'function') {
-                fbq('track', 'Lead', { content_name: 'fairsplit_waitlist' });
-              }
-            } else {
-              throw new Error((data && data.error) || 'unknown');
-            }
-          })
-          .catch(function () {
-            submit.disabled = false;
-            submit.textContent = originalLabel;
-            errorEl.textContent = 'Something went wrong. Try again, or email me directly at justin.paul.lee.1996@gmail.com.';
+          var email = (emailIn.value || '').trim();
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorEl.textContent = 'Please enter a valid email address.';
             errorEl.classList.remove('hidden');
-          });
+            emailIn.focus();
+            return;
+          }
+
+          submit.disabled = true;
+          var originalLabel = submit.textContent;
+          submit.textContent = 'Sending…';
+
+          var utm = {};
+          try { utm = JSON.parse(sessionStorage.getItem('utm_data') || '{}'); } catch (err) {}
+
+          var payload = {
+            email: email,
+            utm_source:   utm.utm_source   || '',
+            utm_medium:   utm.utm_medium   || '',
+            utm_campaign: utm.utm_campaign || '',
+            utm_content:  utm.utm_content  || '',
+            user_agent:   navigator.userAgent || ''
+          };
+
+          fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              if (data && data.ok) {
+                form.classList.add('hidden');
+                success.classList.remove('hidden');
+                if (typeof fbq === 'function') {
+                  fbq('track', 'Lead', { content_name: 'fairsplit_waitlist' });
+                }
+              } else {
+                throw new Error((data && data.error) || 'unknown');
+              }
+            })
+            .catch(function () {
+              submit.disabled = false;
+              submit.textContent = originalLabel;
+              errorEl.textContent = "Something went wrong. Try again, or email me directly at justin.paul.lee.1996@gmail.com.";
+              errorEl.classList.remove('hidden');
+            });
+        });
+      }
+
+      attachForm({
+        formId: 'hero-form', emailId: 'hero-email', submitId: 'hero-submit',
+        successId: 'hero-success', errorId: 'hero-error'
+      });
+      attachForm({
+        formId: 'waitlist-form', emailId: 'waitlist-email', submitId: 'waitlist-submit',
+        successId: 'waitlist-success', errorId: 'waitlist-error'
       });
     })();
   </script>
